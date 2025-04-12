@@ -4,6 +4,6 @@
 class NetIntLooper : public BaseLooper {
 public:
     NetIntLooper();
-    // Declare the overridden run method
+    // Override run() to implement network-specific logic.
     void run() override;
 };

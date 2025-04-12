@@ -33,7 +33,6 @@ void handleSignal(int signal) {
             std::cout << "\n[global] Unknown signal (" << signal << ") received.\n";
     }
 }
-
 int main() {
     // Attach signal handlers for multiple signals
     std::signal(SIGINT, handleSignal);
@@ -41,27 +40,18 @@ int main() {
     std::signal(SIGHUP, handleSignal);
     std::signal(SIGUSR1, handleSignal);
     std::signal(SIGUSR2, handleSignal);
+    // ... add additional signal handlers as desired ...
 
-    auto masterLooper = std::make_shared<MasterLooper>();
-    masterLooper->startNetworkLooper();
-
-    // Run MasterLooper process
-    std::thread masterThread([&]() {
-        masterLooper->runMasterProcess();
-    });
-
-    // Monitor for exit signal
+    // Use the factory method to create and initialize MasterLooper.
+    auto masterLooper = BaseLooper::create<MasterLooper>();
+    // Now that the looper is running in background threads, the main thread
+    // can monitor for the exit signal.
     while (!exitSignalReceived.load()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
-    // Trigger graceful shutdown
+    // Trigger graceful shutdown.
     masterLooper->teardown();
-
-    // Wait for master thread to finish
-    if (masterThread.joinable()) {
-        masterThread.join();
-    }
 
     std::cout << "[global] All loopers exited gracefully. Goodbye!" << std::endl;
     return 0;

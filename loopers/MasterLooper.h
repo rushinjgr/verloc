@@ -4,7 +4,9 @@
 
 class MasterLooper : public BaseLooper {
 public:
-    MasterLooper(); // No need for an interval argument
-    void runMasterProcess();
-    void startNetworkLooper(); // New method to add a NetIntLooper
+    MasterLooper(); // Minimal constructor.
+    void startNetworkLooper(); // Adds a NetIntLooper as a subprocess.
+
+    // Override initialize() to perform derived-class initialization.
+    virtual void initialize() override;
 };
