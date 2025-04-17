@@ -31,3 +31,11 @@ void handleSignal(int signal) {
             std::cout << "\n[global] Unknown signal (" << signal << ") received.\n";
     }
 }
+
+void setupSignalHandlers() {
+    std::signal(SIGINT, handleSignal);
+    std::signal(SIGTERM, handleSignal);
+    std::signal(SIGHUP, handleSignal);
+    std::signal(SIGUSR1, handleSignal);
+    std::signal(SIGUSR2, handleSignal);
+}

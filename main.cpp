@@ -3,21 +3,16 @@
 #include <memory>
 #include <csignal>
 #include <thread>
+#include <iostream>
 
-// Signal handlers for multiple signals.
 int main() {
-    // Attach signal handlers.
-    std::signal(SIGINT, handleSignal);
-    std::signal(SIGTERM, handleSignal);
-    std::signal(SIGHUP, handleSignal);
-    std::signal(SIGUSR1, handleSignal);
-    std::signal(SIGUSR2, handleSignal);
+    // Attach all signal handlers using the utility function.
+    setupSignalHandlers();
 
     // Use the factory method to create and initialize MasterLooper.
     auto masterLooper = BaseLooper::create<MasterLooper>();
     
-    // Now that the looper is running in background threads, the main thread
-    // can monitor for the exit signal.
+    // Monitor the exit flag from the global utility.
     while (!exitSignalReceived.load()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
